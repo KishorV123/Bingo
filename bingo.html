@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>25 Number Bingo</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            grid-gap: 5px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border: 2px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .marked {
+            background-color: lightgreen;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: red;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>25 Number Bingo</h1>
+
+<div id="board"></div>
+
+<button onclick="generateBoard()">New Game</button>
+
+<div id="result"></div>
+
+<script>
+    let board = [];
+
+    function generateBoard() {
+        document.getElementById("result").innerText = "";
+        board = [];
+        let numbers = Array.from({length: 25}, (_, i) => i + 1);
+
+        // Shuffle numbers
+        numbers.sort(() => Math.random() - 0.5);
+
+        const boardDiv = document.getElementById("board");
+        boardDiv.innerHTML = "";
+
+        for (let i = 0; i < 25; i++) {
+            let cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.innerText = numbers[i];
+            cell.onclick = function() {
+                cell.classList.toggle("marked");
+                checkWin();
+            };
+            board.push(cell);
+            boardDiv.appendChild(cell);
+        }
+    }
+
+    function checkWin() {
+        let lines = 0;
+
+        // Check rows
+        for (let r = 0; r < 5; r++) {
+            if (board[r*5].classList.contains("marked") &&
+                board[r*5+1].classList.contains("marked") &&
+                board[r*5+2].classList.contains("marked") &&
+                board[r*5+3].classList.contains("marked") &&
+                board[r*5+4].classList.contains("marked")) {
+                lines++;
+            }
+        }
+
+        // Check columns
+        for (let c = 0; c < 5; c++) {
+            if (board[c].classList.contains("marked") &&
+                board[c+5].classList.contains("marked") &&
+                board[c+10].classList.contains("marked") &&
+                board[c+15].classList.contains("marked") &&
+                board[c+20].classList.contains("marked")) {
+                lines++;
+            }
+        }
+
+        // Check diagonals
+        if (board[0].classList.contains("marked") &&
+            board[6].classList.contains("marked") &&
+            board[12].classList.contains("marked") &&
+            board[18].classList.contains("marked") &&
+            board[24].classList.contains("marked")) {
+            lines++;
+        }
+
+        if (board[4].classList.contains("marked") &&
+            board[8].classList.contains("marked") &&
+            board[12].classList.contains("marked") &&
+            board[16].classList.contains("marked") &&
+            board[20].classList.contains("marked")) {
+            lines++;
+        }
+
+        if (lines >= 5) {
+            document.getElementById("result").innerText = "BINGO! You completed 5 lines!";
+        }
+    }
+
+    generateBoard();
+</script>
+
+</body>
+</html>
